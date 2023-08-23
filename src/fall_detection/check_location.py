@@ -54,22 +54,28 @@ def update_fall(location, room):
     conn.commit()
 
 def main():
+    comfort_room_dist = 50
+
     while True: 
         logger.info('READY...')
-        data, addr = sock.recvfrom(1024)
         cmd = subprocess.Popen('iwconfig %s' % args.interface, shell=True,stdout=subprocess.PIPE)
 
         for line in cmd.stdout: 
             if 'Link Quality' in line:
                 check_map = list(map(int, re.findall(r'\d+', line)))
 
-                if check_map[2] <= 50:
+                if check_map[2] <= comfort_room_dist:
                     update_fall(Location.COMFORT_ROOM, ROOM_NUMBER)
-                    sock.sendto(f"COMFORT ROOM #{ROOM_NUMBER}", (UDP_RECEIVER, UDP_PATIENT_ID))
-
+                    sock.sendto(
+                        f"COMFORT ROOM #{ROOM_NUMBER}", 
+                        (UDP_RECEIVER, UDP_PATIENT_ID)
+                    )
                 else:
                     update_fall(Location.COMFORT_ROOM, ROOM_NUMBER) 
-                    sock.sendto(f"LIVING ROOM #{ROOM_NUMBER}", (UDP_RECEIVER, UDP_PATIENT_ID))
+                    sock.sendto(
+                        f"LIVING ROOM #{ROOM_NUMBER}", 
+                        (UDP_RECEIVER, UDP_PATIENT_ID)
+                    )
 
             elif 'Not-Asciated' in line:
                 logger.info('NO SIGNAL')
