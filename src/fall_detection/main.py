@@ -10,13 +10,17 @@ from settings import (
 adxl = ADXL345()
 sock = socket(AF_INET, SOCK_DGRAM)
 
-while True:
-    x, y, z = adxl.read() 
-    total_fall = abs(z) + abs(x) + abs(y)
- 
-    if total_fall > FALL_CONFIDENCE:
-        sock.sendto(bytes(f'[{UDP_PATIENT_ID}] Fall detected...', 'utf-8'), 
-                    (UDP_RECEIVER, UDP_PATIENT_ID))
-        sleep(2)
+def main():
+    while True:
+        x, y, z = adxl.read() 
+        total_fall = abs(z) + abs(x) + abs(y)
+    
+        if total_fall > FALL_CONFIDENCE:
+            sock.sendto(bytes(f'[{UDP_PATIENT_ID}] Fall detected...', 'utf-8'), 
+                        (UDP_RECEIVER, UDP_PATIENT_ID))
+            sleep(2)
 
-    total_fall = 0
+        total_fall = 0
+
+if __name__ == "__main__":
+    main()
