@@ -1,7 +1,7 @@
 from socket import socket, AF_INET, SOCK_DGRAM
 from Adafruit_ADXL345 import ADXL345
 from time import sleep
-from settings import (
+from backend.config import (
     UDP_RECEIVER, 
     UDP_PATIENT_ID, 
     FALL_CONFIDENCE
