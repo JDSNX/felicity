@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     udp_from_server: str
     room_number: int
     database_url: str
+    pin_light: int
+    pin_window: int
+    pin_door: int
     
     model_config = SettingsConfigDict(env_file='../.env')
 
