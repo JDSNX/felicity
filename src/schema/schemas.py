@@ -6,6 +6,11 @@ class Location(str, Enum):
     LIVING_ROOM = 'LIVING ROOM'
     COMFORT_ROOM = 'COMFORT_ROOM'
 
+class Execute(bool, Enum):
+    WINDOW = False
+    LIGHT = False
+    DOOR = False
+
 class AccountBase(BaseModel):
     username: str 
     password: str 
