@@ -15,7 +15,14 @@ class Settings(BaseSettings):
     pin_light: int
     pin_window: int
     pin_door: int
+    door: bool
+    light: bool
+    window: bool
     
+    algorithm: str
+    secret_key: str
+    access_token_expire_minutes: int
+
     model_config = SettingsConfigDict(env_file='../.env')
 
 settings = Settings()

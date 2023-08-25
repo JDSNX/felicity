@@ -1,5 +1,6 @@
 from database import Base
 from datetime import datetime
+from passlib import hash
 from sqlalchemy import (
     Column, 
     Integer, 
@@ -23,6 +24,10 @@ class Account(Base):
 
     created_at = Column(DateTime, default=datetime.utcnow)
     last_updated = Column(DateTime, default=datetime.utcnow)
+
+    
+    def verify_password(self, password: str=None):
+        return hash.bcrypt.verify(password, self.password)
 
 class Patient(Base):
     __tablename__ = 'patients'
