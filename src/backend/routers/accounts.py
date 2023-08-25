@@ -6,11 +6,14 @@ from services import (
     add_account as _add_account,
     get_accounts as _get_accounts,
     create_token as _create_token,
-    get_current_user as _get_current_user
+    get_current_user as _get_current_user,
+    update_account as _update_account,
+    delete_account as _delete_account,
+    get_id_by_username
 )
 
 from schema.schemas import (
-    Account, AccountCreate, Token
+    Account, AccountCreate, Token, AccountUpdate
 )
 
 router = APIRouter(prefix="/accounts", tags=['Accounts'])
@@ -33,8 +36,39 @@ async def create_account(account: AccountCreate,
 @router.get('/', response_model=List[Account])
 async def get_accounts(db: Session=Depends(get_db),
                        acct: Account=Depends(_get_current_user)) -> List[Account]:
-    return await _get_accounts(db=db)
+    if acct is not None:
+        return await _get_accounts(db=db)
 
 @router.post('/me', status_code=status.HTTP_201_CREATED, response_model=Account)
 async def get_user(account: Account=Depends(_get_current_user)) -> Account:
     return account
+
+@router.delete('/{username}', status_code=status.HTTP_201_CREATED)
+async def delete_account(username: str, 
+                         user: Account=Depends(_get_current_user),
+                         db: Session=Depends(get_db)) -> dict():
+    if user is not None:
+        await _delete_account(username=username, db=db)
+
+        return {
+            "status": status.HTTP_200_OK,
+            "message": f"Username: {username} - successfully deleted."
+        }
+
+@router.put('/{username}', status_code=status.HTTP_201_CREATED)
+async def update_account(username: str,
+                      account: AccountUpdate, 
+                      user: Account=Depends(_get_current_user),
+                      db: Session=Depends(get_db)) -> dict():
+    if user is not None:
+        await _update_account(
+            username=username, 
+            account=account, 
+            db=db
+        )
+
+        return {
+            "status": status.HTTP_200_OK,
+            "message": f"Username: {username} - successfully updated.",
+            "data": account
+        }
