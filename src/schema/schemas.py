@@ -6,11 +6,6 @@ class Location(str, Enum):
     LIVING_ROOM = 'LIVING ROOM'
     COMFORT_ROOM = 'COMFORT_ROOM'
 
-class Execute(bool, Enum):
-    WINDOW = False
-    LIGHT = False
-    DOOR = False
-
 class AccountBase(BaseModel):
     username: str 
     password: str 
@@ -25,8 +20,10 @@ class AccountCreate(AccountBase):
 
 class Account(AccountBase):
     id: int
-    created_at: datetime
-    last_updated: datetime
     
     class Config:
         from_attributes = True
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str="bearer"

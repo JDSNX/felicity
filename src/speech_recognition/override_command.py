@@ -31,13 +31,13 @@ def set_gpio():
   
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(settings.PIN_LIGHT, GPIO.OUT)
-    GPIO.setup(settings.PIN_DOOR, GPIO.OUT)
-    GPIO.setup(settings.PIN_BLIND, GPIO.OUT)
+    GPIO.setup(settings.pin_light, GPIO.OUT)
+    GPIO.setup(settings.pin_door, GPIO.OUT)
+    GPIO.setup(settings.pin_window, GPIO.OUT)
     
-    GPIO.output(settings.PIN_LIGHT, True)
-    GPIO.output(settings.PIN_DOOR, True)
-    GPIO.output(settings.PIN_BLIND, False)
+    GPIO.output(settings.pin_light, True)
+    GPIO.output(settings.pin_door, True)
+    GPIO.output(settings.pin_window, False)
   
     logger.info('Initializing complete...')
  
@@ -46,7 +46,7 @@ def execute_gpio(PIN, state):
  
 def ServoCycle(CW_SERVO):
     i = 0
-    servo = Servo(settings.PIN_BLIND)
+    servo = Servo(settings.pin_window)
     if CW_SERVO:
         while i != 72:
           servo.min()
