@@ -117,7 +117,8 @@ async def update_account(username: str,
         username=username,
         db=db
     )
-
+    account.password=hash.bcrypt.hash(account.password)
+    
     acc_db.id = Account_Model.id
     acc_db.password = account.password
     acc_db.first_name = account.last_name
