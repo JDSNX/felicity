@@ -43,8 +43,11 @@ class Patient(Base):
     contact_person = Column(String, nullable=False)
     contact_number = Column(String, nullable=False)
     date_of_birth = Column(DateTime, nullable=False)
-    is_connected = Column(Boolean, nullable=False)
-    is_fall = Column(Boolean, nullable=False)
+    is_connected = Column(Boolean, nullable=False, default=False)
+    is_fall = Column(Boolean, nullable=False, default=False)
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+    last_updated = Column(DateTime, default=datetime.utcnow)
 
 class Fall(Base):
     __tablename__ = 'falls'
