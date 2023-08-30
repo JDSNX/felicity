@@ -194,6 +194,7 @@ async def update_patient(patient_id: int,
     patient_db.contact_person = patient.contact_person
     patient_db.contact_number = patient.contact_number
     patient_db.date_of_birth = patient.date_of_birth
+    patient_db.last_updated = datetime.utcnow()
     db.commit()
     db.refresh(patient_db)
 
