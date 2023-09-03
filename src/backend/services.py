@@ -7,7 +7,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
 
 from passlib import hash
-from database import session_local
+from database.core import get_db
 from sqlalchemy.orm import Session
 from datetime import datetime
 from typing import List
@@ -24,13 +24,6 @@ from jwt import encode, decode
 
 oauth2_schema = OAuth2PasswordBearer(tokenUrl='token')
 
-
-def get_db():
-    db = session_local()
-    try:
-        yield db
-    finally:
-        db.close()
 
 async def authenticate_user(username: str, 
                             password: str, 
