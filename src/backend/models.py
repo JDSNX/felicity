@@ -1,4 +1,4 @@
-from database import Base
+from database.core import Base
 from datetime import datetime
 from passlib import hash
 from sqlalchemy import (

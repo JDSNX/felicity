@@ -4,7 +4,7 @@ import socket
 
 from socket import socket, AF_INET, SOCK_DGRAM
 from argparse import ArgumentParser
-from schema.schemas import Location
+from schema import Location
 from backend.config import (
     logger,
     settings
@@ -45,7 +45,7 @@ def main():
                         (settings.udp_receiver, settings.udp_patient_id)
                     )
                 else:
-                    update_fall(Location.COMFORT_ROOM, settings.room_number) 
+                    update_fall(Location.LIVING_ROOM, settings.room_number) 
                     sock.sendto(
                         f"LIVING ROOM #{settings.room_number}", 
                         (settings.udp_receiver, settings.udp_patient_id)
