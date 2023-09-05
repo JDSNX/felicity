@@ -4,14 +4,14 @@ from jose import jwt
 from config import settings
 
 from users.models import User as User_Model
-from users.services import get_user_by_username
+from users.service import get_user_by_email
 from users.schemas import User
 
 from .schemas import Token
 
 
-def authenticate_user(username: str, password: str, db: Session) -> User_Model:
-    user = get_user_by_username(username=username, db=db)
+def authenticate_user(email: str, password: str, db: Session) -> User_Model:
+    user = get_user_by_email(email=email, db=db)
 
     if not user or not user.verify_password(password=password):
         return False
