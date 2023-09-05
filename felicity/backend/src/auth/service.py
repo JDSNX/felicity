@@ -19,8 +19,8 @@ def authenticate_user(email: str, password: str, db: Session) -> User_Model:
     return user
 
 
-def create_token(account: User_Model) -> Token:
-    account_obj = User.model_validate(account)
-    token = jwt.encode(account_obj.model_dump(), settings.secret_key)
+def create_token(user: User_Model) -> Token:
+    user_obj = User.model_validate(user)
+    token = jwt.encode(user_obj.model_dump(), settings.secret_key)
 
     return Token(access_token=token)
