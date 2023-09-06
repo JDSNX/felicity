@@ -40,16 +40,18 @@ def get_current_user(
     token: str = Depends(oauth2_schema), db: Session = Depends(get_db)
 ) -> User_Model:
     try:
-        payload = jwt.decode(token, settings.secret_key, [settings.algorithm])
-
-        account = db.query(User_Model).get(payload["id"])
+        payload = jwt.decode(
+            token=token, key=settings.secret_key, algorithms=[settings.algorithm]
+        )
+        user = db.query(User_Model).get(payload["id"])
 
     except:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Email or Password"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials.",
         )
 
-    return User_Model.model_validate(account)
+    return User.model_validate(user)
 
 
 def _selector(email: str, db: Session) -> User_Model:
@@ -63,9 +65,9 @@ def _selector(email: str, db: Session) -> User_Model:
     return acct
 
 
-def get_accounts(db: Session) -> List[User_Model]:
-    acct = db.query(User_Model).all()
-    return list(map(User_Model.model_validate, acct))
+def get_users(db: Session) -> List[User]:
+    user = db.query(User_Model).all()
+    return list(map(User.model_validate, user))
 
 
 def delete_user(email: str, db: Session) -> None:

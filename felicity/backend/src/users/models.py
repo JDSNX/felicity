@@ -19,8 +19,8 @@ class User(Base):
     is_active = Column(Boolean(), default=True)
     is_superuser = Column(Boolean(), default=False)
 
-    created_at = Column(DateTime, default=datetime.utcnow)
-    last_updated = Column(DateTime, default=datetime.utcnow)
+    # created_at = Column(DateTime, default=datetime.utcnow)
+    # last_updated = Column(DateTime, default=datetime.utcnow)
 
     def verify_password(self, password: str = None):
         return hash.bcrypt.verify(password, self.hashed_password)

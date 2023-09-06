@@ -23,8 +23,8 @@ class UserUpdate(UserBase):
 
 class UserInDBBase(UserBase):
     id: int
-
-    last_updated: datetime = Field(default=datetime.utcnow())
+    # created_at: datetime = datetime.now()
+    # last_updated: datetime = datetime.now()
 
     class Config:
         from_attributes = True

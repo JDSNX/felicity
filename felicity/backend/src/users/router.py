@@ -7,7 +7,7 @@ from .schemas import User, UserCreate, UserUpdate
 from .service import (
     get_user_by_email,
     create,
-    get_accounts,
+    get_users as _get_users,
     get_current_user,
     delete_user as _delete_user,
     update_user as _update_user,
@@ -36,10 +36,10 @@ async def create_user(user_in: UserCreate, db: Session = Depends(get_db)) -> Tok
 
 @router.get("/", response_model=List[User])
 async def get_users(
-    db: Session = Depends(get_db), acct: User = Depends(get_current_user)
+    db: Session = Depends(get_db), user: User = Depends(get_current_user)
 ) -> List[User]:
-    if acct is not None:
-        return get_accounts(db=db)
+    if user:
+        return _get_users(db=db)
 
 
 @router.delete("/{email}", status_code=status.HTTP_201_CREATED)
