@@ -9,8 +9,8 @@ from .service import (
     add_account,
     get_accounts,
     get_current_user,
-    delete_user,
-    update_user,
+    delete_user as _delete_user,
+    update_user as _update_user,
 )
 
 from auth.service import create_token
@@ -54,7 +54,7 @@ async def delete_user(
     db: Session = Depends(get_db),
 ) -> dict():
     if user is not None:
-        delete_user(email=email, db=db)
+        _delete_user(email=email, db=db)
 
         return {
             "status": status.HTTP_200_OK,
@@ -63,17 +63,17 @@ async def delete_user(
 
 
 @router.put("/{email}", status_code=status.HTTP_201_CREATED)
-async def update_account(
+async def update_user(
     email: str,
-    account: UserUpdate,
+    user_obj: UserUpdate,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict():
     if user is not None:
-        await update_account(email=email, account=account, db=db)
+        await _update_user(email=email, user_obj=user_obj, db=db)
 
         return {
             "status": status.HTTP_200_OK,
-            "message": f"{email} - successfully updated.",
-            "data": account,
+            "message": f"{user_obj} - successfully updated.",
+            "data": user_obj,
         }
