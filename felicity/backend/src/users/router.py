@@ -42,30 +42,30 @@ async def get_users(
         return _get_users(db=db)
 
 
-@router.delete("/{email}", status_code=status.HTTP_201_CREATED)
+@router.delete("/{user_id}", status_code=status.HTTP_201_CREATED)
 async def delete_user(
-    email: str,
+    user_id: int,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict():
     if user is not None:
-        _delete_user(email=email, db=db)
+        _delete_user(user_id=user_id, db=db)
 
         return {
             "status": status.HTTP_200_OK,
-            "message": f"{email} - successfully deleted.",
+            "message": f"ID: {user_id} - successfully deleted.",
         }
 
 
-@router.put("/{id}", status_code=status.HTTP_201_CREATED)
+@router.put("/{user_id}", status_code=status.HTTP_201_CREATED)
 async def update_user(
-    id: int,
+    user_id: int,
     user_obj: UserUpdate,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict():
     if user is not None:
-        _update_user(user_id=id, user=user_obj, db=db)
+        _update_user(user_id=user_id, user=user_obj, db=db)
 
         return {
             "status": status.HTTP_200_OK,

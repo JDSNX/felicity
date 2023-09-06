@@ -54,8 +54,8 @@ def get_current_user(
     return User.model_validate(user)
 
 
-def _selector(id: int, db: Session) -> User_Model:
-    user = db.query(User_Model).filter(User_Model.id == id).first()
+def _selector(user_id: int, db: Session) -> User_Model:
+    user = db.query(User_Model).filter(User_Model.id == user_id).first()
 
     if user is None:
         raise HTTPException(
@@ -70,14 +70,14 @@ def get_users(db: Session) -> List[User]:
     return list(map(User.model_validate, user))
 
 
-def delete_user(email: str, db: Session) -> None:
-    stud = _selector(email=email, db=db)
+def delete_user(user_id: str, db: Session) -> None:
+    stud = _selector(user_id=user_id, db=db)
     db.delete(stud)
     db.commit()
 
 
 def update_user(user_id: int, user: UserUpdate, db: Session) -> User_Model:
-    user_db = _selector(id=user_id, db=db)
+    user_db = _selector(user_id=user_id, db=db)
     user_db.hashed_password = hash.bcrypt.hash(user.password)
 
     user_data = user.model_dump(exclude_unset=True)
