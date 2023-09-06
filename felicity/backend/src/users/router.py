@@ -69,6 +69,6 @@ async def update_user(
 
         return {
             "status": status.HTTP_200_OK,
-            "message": f"{user_obj.id} | {user_obj.full_name} - successfully updated.",
+            "message": f"ID: {id} - successfully updated.",
             "data": user_obj,
         }
