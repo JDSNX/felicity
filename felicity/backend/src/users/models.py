@@ -23,4 +23,4 @@ class User(Base):
     last_updated = Column(DateTime, default=datetime.utcnow)
 
     def verify_password(self, password: str = None):
-        return hash.bcrypt.verify(password, self.password)
+        return hash.bcrypt.verify(password, self.hashed_password)

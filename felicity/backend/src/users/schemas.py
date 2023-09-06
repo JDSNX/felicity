@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 
 
@@ -24,7 +24,7 @@ class UserUpdate(UserBase):
 class UserInDBBase(UserBase):
     id: int
 
-    last_updated: datetime
+    last_updated: datetime = Field(default=datetime.utcnow())
 
     class Config:
         from_attributes = True

@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from passlib import hash
-from typing import List
+from typing import List, Optional
 from datetime import datetime
 from sqlalchemy.orm import Session
 
@@ -15,13 +15,19 @@ from .schemas import User, UserCreate, UserUpdate
 oauth2_schema = OAuth2PasswordBearer(tokenUrl="token")
 
 
-def get_user_by_email(email: str, db: Session) -> User_Model:
+def get_user_by_email(email: str, db: Session) -> Optional[User_Model]:
     return db.query(User_Model).filter(User_Model.email == email).first()
 
 
-def add_account(user: UserCreate, db: Session) -> User_Model:
-    user.password = hash.bcrypt.hash(user.password)
-    user_obj = User_Model(**user.model_dump())
+def create(user: UserCreate, db: Session) -> User_Model:
+    hashed_password = hash.bcrypt.hash(user.password)
+
+    user_obj = User_Model(
+        email=user.email,
+        hashed_password=hashed_password,
+        is_superuser=user.is_superuser,
+        full_name=user.full_name,
+    )
 
     db.add(user_obj)
     db.commit()
@@ -32,7 +38,7 @@ def add_account(user: UserCreate, db: Session) -> User_Model:
 
 def get_current_user(
     token: str = Depends(oauth2_schema), db: Session = Depends(get_db)
-) -> User:
+) -> User_Model:
     try:
         payload = jwt.decode(token, settings.secret_key, [settings.algorithm])
 
@@ -43,7 +49,7 @@ def get_current_user(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Email or Password"
         )
 
-    return User.model_validate(account)
+    return User_Model.model_validate(account)
 
 
 def _selector(email: str, db: Session) -> User_Model:
@@ -57,9 +63,9 @@ def _selector(email: str, db: Session) -> User_Model:
     return acct
 
 
-def get_accounts(db: Session) -> List[User]:
+def get_accounts(db: Session) -> List[User_Model]:
     acct = db.query(User_Model).all()
-    return list(map(User.model_validate, acct))
+    return list(map(User_Model.model_validate, acct))
 
 
 def delete_user(email: str, db: Session) -> None:
@@ -68,7 +74,7 @@ def delete_user(email: str, db: Session) -> None:
     db.commit()
 
 
-def update_user(email: str, user: UserUpdate, db: Session) -> User:
+def update_user(email: str, user: UserUpdate, db: Session) -> User_Model:
     user_db = _selector(email=email, db=db)
 
     user_db.id = User_Model.id
@@ -80,4 +86,4 @@ def update_user(email: str, user: UserUpdate, db: Session) -> User:
     db.commit()
     db.refresh(user_db)
 
-    return User.model_validate(user_db)
+    return User_Model.model_validate(user_db)

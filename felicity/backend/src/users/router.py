@@ -6,7 +6,7 @@ from database.core import get_db
 from .schemas import User, UserCreate, UserUpdate
 from .service import (
     get_user_by_email,
-    add_account,
+    create,
     get_accounts,
     get_current_user,
     delete_user as _delete_user,
@@ -20,16 +20,16 @@ router = APIRouter(prefix="/Users", tags=["Users"])
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=Token)
-async def create_user(user: UserCreate, db: Session = Depends(get_db)) -> Token:
-    db_user = get_user_by_email(user.email, db)
+async def create_user(user_in: UserCreate, db: Session = Depends(get_db)) -> Token:
+    user = get_user_by_email(user_in.email, db)
 
-    if db_user:
+    if user:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"{user.email} is already registered.",
+            detail=f"{user_in.email} is already registered.",
         )
 
-    _user = add_account(user=user, db=db)
+    _user = create(user=user_in, db=db)
 
     return create_token(user=_user)
 

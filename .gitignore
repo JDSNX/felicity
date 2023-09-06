@@ -1,5 +1,6 @@
 __pycache__
 venv/
 .env
-src/backend/database.db
+*.db
 .gitignore
+.vscode

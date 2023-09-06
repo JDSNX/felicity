@@ -63,6 +63,7 @@ async def create_token(account: Account_Model) -> Token:
 
 
 async def get_user_by_username(username: str, db: Session) -> Account_Model:
+    print(db.query(Account_Model).filter(Account_Model.username == username).first())
     return db.query(Account_Model).filter(Account_Model.username == username).first()
 
 

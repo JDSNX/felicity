@@ -6,7 +6,7 @@ from database.core import get_db
 from .schemas import Token
 from .service import authenticate_user, create_token
 
-router = APIRouter(prefix="/token", tags=["Authentisscation"])
+router = APIRouter(prefix="/token", tags=["Authentication"])
 
 
 @router.post("/", response_model=Token)
