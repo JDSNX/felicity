@@ -21,13 +21,13 @@ def get_user_by_email(email: str, db: Session) -> User_Model:
 
 def add_account(user: UserCreate, db: Session) -> User_Model:
     user.password = hash.bcrypt.hash(user.password)
-    acct_obj = User_Model(**user.model_dump())
+    user_obj = User_Model(**user.model_dump())
 
-    db.add(acct_obj)
+    db.add(user_obj)
     db.commit()
-    db.refresh(acct_obj)
+    db.refresh(user_obj)
 
-    return User.model_validate(acct_obj)
+    return User.model_validate(user_obj)
 
 
 def get_current_user(
