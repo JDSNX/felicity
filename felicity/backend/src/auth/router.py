@@ -13,11 +13,12 @@ router = APIRouter(prefix="/token", tags=["Authentication"])
 async def generate_token(
     creds: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ) -> Token:
-    account = authenticate_user(creds.username, creds.password, db)
+    user = authenticate_user(email=creds.username, password=creds.password, db=db)
 
-    if not account:
+    if not user:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Credentials"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials.",
         )
 
-    return create_token(account=account)
+    return create_token(user=user)
