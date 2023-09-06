@@ -42,11 +42,6 @@ async def get_users(
         return get_accounts(db=db)
 
 
-@router.post("/me", status_code=status.HTTP_201_CREATED, response_model=User)
-async def get_user(account: User = Depends(get_current_user)) -> User:
-    return account
-
-
 @router.delete("/{email}", status_code=status.HTTP_201_CREATED)
 async def delete_user(
     email: str,
