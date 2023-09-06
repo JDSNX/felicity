@@ -54,15 +54,15 @@ def get_current_user(
     return User.model_validate(user)
 
 
-def _selector(email: str, db: Session) -> User_Model:
-    acct = db.query(User_Model).filter(User_Model.email == email).first()
+def _selector(id: int, db: Session) -> User_Model:
+    user = db.query(User_Model).filter(User_Model.id == id).first()
 
-    if acct is None:
+    if user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User does not exists."
         )
 
-    return acct
+    return user
 
 
 def get_users(db: Session) -> List[User]:
@@ -76,16 +76,15 @@ def delete_user(email: str, db: Session) -> None:
     db.commit()
 
 
-def update_user(email: str, user: UserUpdate, db: Session) -> User_Model:
-    user_db = _selector(email=email, db=db)
-
-    user_db.id = User_Model.id
-    user_db.email = user.email
-    user_db.full_name = user.full_name
-    user_db.is_active = user.is_active
+def update_user(user_id: int, user: UserUpdate, db: Session) -> User_Model:
+    user_db = _selector(id=user_id, db=db)
     user_db.hashed_password = hash.bcrypt.hash(user.password)
-    user_db.last_updated = datetime.utcnow()
+
+    user_data = user.model_dump(exclude_unset=True)
+    for key, value in user_data.items():
+        setattr(user_db, key, value)
+
     db.commit()
     db.refresh(user_db)
 
-    return User_Model.model_validate(user_db)
+    return User.model_validate(user_db)

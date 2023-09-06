@@ -57,18 +57,18 @@ async def delete_user(
         }
 
 
-@router.put("/{email}", status_code=status.HTTP_201_CREATED)
+@router.put("/{id}", status_code=status.HTTP_201_CREATED)
 async def update_user(
-    email: str,
+    id: int,
     user_obj: UserUpdate,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict():
     if user is not None:
-        await _update_user(email=email, user_obj=user_obj, db=db)
+        _update_user(user_id=id, user=user_obj, db=db)
 
         return {
             "status": status.HTTP_200_OK,
-            "message": f"{user_obj} - successfully updated.",
+            "message": f"{user_obj.id} | {user_obj.full_name} - successfully updated.",
             "data": user_obj,
         }
