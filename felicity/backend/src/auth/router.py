@@ -6,8 +6,6 @@ from database.core import get_db
 from .schemas import Token
 from .service import authenticate_user, create_token
 
-from src.exceptions import NotAuthenticated
-
 router = APIRouter(prefix="/token", tags=["Authentication"])
 
 
@@ -18,6 +16,9 @@ async def generate_token(
     user = authenticate_user(email=creds.username, password=creds.password, db=db)
 
     if not user:
-        raise NotAuthenticated()
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials.",
+        )
 
     return create_token(user=user)
