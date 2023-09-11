@@ -13,7 +13,7 @@ class DetailedHTTPException(HTTPException):
 
 class PermissionDenied(DetailedHTTPException):
     STATUS_CODE = status.HTTP_403_FORBIDDEN
-    DETAIL = "Permission Denied!"
+    DETAIL = "Permission Denied"
 
 
 class NotFound(DetailedHTTPException):
@@ -22,17 +22,12 @@ class NotFound(DetailedHTTPException):
 
 class BadRequest(DetailedHTTPException):
     STATUS_CODE = status.HTTP_400_BAD_REQUEST
-    DETAIL = "Bad Request!"
+    DETAIL = "Bad Request"
 
 
 class NotAuthenticated(DetailedHTTPException):
     STATUS_CODE = status.HTTP_401_UNAUTHORIZED
-    DETAIL = "User not authenticated"
+    DETAIL = "Not Authenticated"
 
     def __init__(self) -> None:
         super().__init__(headers={"WWW-Authenticate": "Bearer"})
-
-
-class UserConflict(DetailedHTTPException):
-    STATUS_CODE = status.HTTP_409_CONFLICT
-    DETAIL = "User is already registered."

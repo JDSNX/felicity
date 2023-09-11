@@ -9,18 +9,18 @@ from database.core import Base
 #     from .item import Item  # noqa: F401
 
 
-class User(Base):
-    __tablename__ = "users"
+class Patient(Base):
+    __tablename__ = "patients"
 
     id = Column(Integer, primary_key=True, index=True)
     full_name = Column(String, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
+    date_of_birth = Column(String)
+    contact_person = Column(String)
+    contact_number = Column(String)
+    email = Column(String, index=True, nullable=False)
     is_active = Column(Boolean(), default=True)
-    is_superuser = Column(Boolean(), default=False)
+    room_no = Column(String, default="N/A")
+    fall_status = Column(Boolean(), default=False)
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow)
-
-    def verify_password(self, password: str = None):
-        return hash.bcrypt.verify(password, self.hashed_password)
