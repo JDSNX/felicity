@@ -3,6 +3,8 @@ from datetime import datetime, date
 from typing import Any, Optional
 from pydantic import ConfigDict, BaseModel, EmailStr, Field, field_validator
 
+from rooms.schemas import Room
+
 
 class PatientBase(BaseModel):
     full_name: str
@@ -33,7 +35,7 @@ class PatientCreate(PatientBase):
 
 class PatientInDBBase(PatientBase):
     id: int
-
+    room: list[Room]
     created_at: datetime = datetime.now()
     updated_at: datetime = datetime.now()
     model_config = ConfigDict(from_attributes=True)

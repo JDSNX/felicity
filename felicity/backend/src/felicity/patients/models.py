@@ -20,6 +20,7 @@ class Patient(Base):
     email = Column(String, index=True, nullable=False)
     is_active = Column(Boolean(), default=True)
     fall_status = Column(Boolean(), default=False)
+
     room = relationship("Room", back_populates="patients")
 
     created_at = Column(DateTime, default=datetime.utcnow)

@@ -11,10 +11,11 @@ from users.services import (
     get_user_by_id,
     authenticate,
     update,
+    status as _status,
 )
 from users.jwt import parse_jwt_user_data, create_access_token, parse_jwt_admin_data
 from users.schemas import User, JWTData, AccessTokenResponse, UserUpdate, UserUpdated
-from users.exceptions import EmailTaken, InvalidCredentials
+from users.exceptions import EmailTaken, InvalidCredentials, UserNotFound
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -73,3 +74,20 @@ async def update_user(
         email=updated_user.email,
         updated_at=updated_user.updated_at,
     )
+
+
+@router.put("/status/{user_id}")
+async def trigger_status(
+    db: Session = Depends(get_db),
+    *,
+    user_id,
+    _: JWTData = Depends(parse_jwt_admin_data)
+):
+    patient = await get_user_by_id(db=db, user_id=user_id)
+
+    if not patient:
+        raise UserNotFound()
+
+    user = await _status(patient=patient, patient_status=patient.is_active, db=db)
+
+    return user

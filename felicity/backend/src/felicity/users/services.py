@@ -54,3 +54,12 @@ async def authenticate(db: Session, *, email: str, password: str) -> dict[str, A
         raise InvalidCredentials()
 
     return user
+
+
+async def status(db: Session, *, user: User_Model, user_status: bool):
+    user.is_active = not user_status
+
+    db.commit()
+    db.refresh(user)
+
+    return User.model_validate(user)

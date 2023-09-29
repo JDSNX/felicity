@@ -24,3 +24,7 @@ class EmailTaken(BadRequest):
 
 class RefreshTokenNotValid(NotAuthenticated):
     DETAIL = ErrorCode.REFRESH_TOKEN_NOT_VALID
+
+
+class UserNotFound(BadRequest):
+    DETAIL = ErrorCode.ACCOUNT_NOT_FOUND
