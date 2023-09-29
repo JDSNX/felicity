@@ -1,7 +1,7 @@
 import re
 from datetime import datetime, date
 from typing import Any, Optional
-from pydantic import BaseModel, EmailStr, NameEmail, Field, field_validator, validator
+from pydantic import ConfigDict, BaseModel, EmailStr, Field, field_validator
 
 
 class PatientBase(BaseModel):
@@ -9,12 +9,12 @@ class PatientBase(BaseModel):
     date_of_birth: date
     contact_person: str
     contact_number: str = Field(max_length=12)
-    email: Optional[EmailStr]
+    email: Optional[EmailStr] = None
 
     @field_validator("date_of_birth", mode="before")
     @classmethod
     def parse_dob(cls, dob: date):
-        return datetime.strptime(dob, "%Y-%d-%m").date()
+        return datetime.strptime(dob, "%Y-%m-%d").date()
 
     @field_validator("contact_number", mode="after")
     @classmethod
@@ -22,12 +22,8 @@ class PatientBase(BaseModel):
         return f"63{int(cn)}" if cn.startswith(("0")) else cn
 
 
-class PatientUpdateIn(PatientBase):
+class PatientUpdate(PatientBase):
     pass
-
-
-class PatientUpdate(PatientUpdateIn):
-    updated_at: datetime = datetime.now()
 
 
 # Properties to receive via API on creation
@@ -40,10 +36,13 @@ class PatientInDBBase(PatientBase):
 
     created_at: datetime = datetime.now()
     updated_at: datetime = datetime.now()
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class Patient(PatientInDBBase):
     pass
+
+
+class PatientStatus(BaseModel):
+    id: int
+    is_active: bool

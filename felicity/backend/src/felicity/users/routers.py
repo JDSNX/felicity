@@ -4,17 +4,17 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from database.core import get_db
 
-from .schemas import UserCreate
-from .services import (
+from users.schemas import UserCreate
+from users.services import (
     create,
     get_user_by_email,
     get_user_by_id,
     authenticate,
     update,
 )
-from .jwt import parse_jwt_user_data, create_access_token, parse_jwt_admin_data
-from .schemas import User, JWTData, AccessTokenResponse, UserUpdate, UserUpdated
-from .exceptions import EmailTaken, InvalidCredentials
+from users.jwt import parse_jwt_user_data, create_access_token, parse_jwt_admin_data
+from users.schemas import User, JWTData, AccessTokenResponse, UserUpdate, UserUpdated
+from users.exceptions import EmailTaken, InvalidCredentials
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -24,7 +24,7 @@ async def create_user(
     user_in: UserCreate,
     db: Session = Depends(get_db),
 ) -> dict[str, str]:
-    user = await get_user_by_email(user_in.email, db)
+    user = await get_user_by_email(db=db, email=user_in.email)
     if user:
         raise EmailTaken()
 
@@ -37,7 +37,7 @@ async def create_user(
 async def get_my_account(
     jwt_data: JWTData = Depends(parse_jwt_user_data), db: Session = Depends(get_db)
 ) -> None:
-    user = await get_user_by_id(jwt_data.id, db)
+    user = await get_user_by_id(db=db, user_id=jwt_data.id)
 
     return user
 
@@ -48,7 +48,7 @@ async def auth_user(
     db: Session = Depends(get_db),
 ) -> AccessTokenResponse:
     user = await authenticate(
-        email=auth_data.username, password=auth_data.password, db=db
+        db=db, email=auth_data.username, password=auth_data.password
     )
 
     if not user:
@@ -64,8 +64,12 @@ async def update_user(
     jwt_data: JWTData = Depends(parse_jwt_admin_data),
     db: Session = Depends(get_db),
 ) -> dict():
-    user = await get_user_by_id(user_id=user_id, db=db)
+    user = await get_user_by_id(db=db, user_id=user_id)
     if user:
-        await update(user_db=user, obj=user_obj, db=db)
+        updated_user = await update(db=db, user_db=user, obj=user_obj)
 
-    return UserUpdated(id=user.id, email=user.email, last_updated=user.updated_at)
+    return UserUpdated(
+        id=updated_user.id,
+        email=updated_user.email,
+        updated_at=updated_user.updated_at,
+    )

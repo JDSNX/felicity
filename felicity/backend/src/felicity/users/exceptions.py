@@ -1,4 +1,4 @@
-from .constants import ErrorCode
+from users.constants import ErrorCode
 from exceptions import BadRequest, NotAuthenticated, PermissionDenied
 
 

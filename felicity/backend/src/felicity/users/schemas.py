@@ -1,7 +1,7 @@
 import re
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import ConfigDict, BaseModel, EmailStr, Field, field_validator
 
 STRONG_PASSWORD_PATTERN = re.compile(r"^(?=.*[\d])(?=.*[!@#$%^&*])[\w!@#$%^&*]{6,128}$")
 
@@ -56,7 +56,7 @@ class UserUpdate(BaseModel):
 class UserUpdated(BaseModel):
     id: int
     email: EmailStr
-    last_updated: datetime
+    updated_at: datetime
 
 
 class UserInDBBase(UserBase):
@@ -64,9 +64,7 @@ class UserInDBBase(UserBase):
 
     created_at: datetime = datetime.now()
     updated_at: datetime = datetime.now()
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API

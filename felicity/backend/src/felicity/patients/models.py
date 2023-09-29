@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING
 
-from passlib import hash
-from sqlalchemy import Boolean, Column, Integer, String, DateTime
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy.orm import relationship
 from datetime import datetime
 from database.core import Base
 
-# if TYPE_CHECKING:
-#     from .item import Item  # noqa: F401
+if TYPE_CHECKING:
+    from rooms.models import Room  # noqa: F401
 
 
 class Patient(Base):
@@ -19,8 +19,8 @@ class Patient(Base):
     contact_number = Column(String)
     email = Column(String, index=True, nullable=False)
     is_active = Column(Boolean(), default=True)
-    room_no = Column(String, default="N/A")
     fall_status = Column(Boolean(), default=False)
+    room = relationship("Room", back_populates="patients")
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow)

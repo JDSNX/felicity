@@ -20,7 +20,7 @@ class User(Base):
     is_superuser = Column(Boolean(), default=False)
 
     created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def verify_password(self, password: str = None):
         return hash.bcrypt.verify(password, self.hashed_password)

@@ -4,13 +4,12 @@ from typing import Any
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from sqlalchemy.orm import Session
 
 from config import settings
 
-from .schemas import JWTData
-from .exceptions import AuthorizationFailed, AuthRequired, InvalidToken
-from .models import User as User_Model
+from users.schemas import JWTData
+from users.exceptions import AuthorizationFailed, AuthRequired, InvalidToken
+from users.models import User as User_Model
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/token", auto_error=False)
 
