@@ -83,11 +83,11 @@ async def trigger_status(
     user_id,
     _: JWTData = Depends(parse_jwt_admin_data)
 ):
-    patient = await get_user_by_id(db=db, user_id=user_id)
+    user = await get_user_by_id(db=db, user_id=user_id)
 
-    if not patient:
+    if not user:
         raise UserNotFound()
 
-    user = await _status(patient=patient, patient_status=patient.is_active, db=db)
+    _user = await _status(db=db, user=user, user_status=user.is_active)
 
-    return user
+    return _user
